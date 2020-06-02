@@ -6,6 +6,8 @@ using BlogEX.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using X.PagedList;
+
 
 namespace BlogEX.Pages
 {
@@ -13,7 +15,8 @@ namespace BlogEX.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly RazorPageBlogContext _context;
-        public IList<MyClass> Article { get; set; }
+        public IEnumerable<MyClass> Article { get; set; }
+
 
         public class MyClass
         {
@@ -31,9 +34,15 @@ namespace BlogEX.Pages
             _context = context;
         }
 
-        public void OnGet()
+        public void OnGet(string q, int? p)
         {
-            Article = _context.Articles.Select(d => 
+            var pageIndex = p.HasValue ? p.Value < 1 ? 1 : p.Value : 1;
+            var query = _context.Articles.AsQueryable();
+            if (string.IsNullOrWhiteSpace(q) == false)
+            {
+                query = query.Where(d => d.Title.Contains(q));
+            }
+            Article = query.Select(d => 
                 new MyClass
                     {
                         Id = d.Id,
@@ -43,8 +52,31 @@ namespace BlogEX.Pages
                         CreateDate = d.CreateDate,
                         Tags = d.Tags
                     })
-                .ToList();
+                .ToPagedList(pageIndex, 5);
 
+        }
+
+        public void OnGetTag(string tag, int? p)
+        {
+            //包含分頁與標籤的文章列表
+            var pageIndex = p.HasValue ? p.Value < 1 ? 1 : p.Value : 1;
+            var query = _context.Articles.AsQueryable();
+            if (string.IsNullOrWhiteSpace(tag) == false)
+            {
+                query = query.Where(d => d.Tags.Contains(tag));
+            }
+
+            Article = query
+                     .Select(d => new MyClass
+                     {
+                         Id = d.Id,
+                         CoverPhoto = d.CoverPhoto,
+                         Title = d.Title,
+                         Body = d.Body.Substring(0, 200),
+                         CreateDate = d.CreateDate,
+                         Tags = d.Tags
+                     })
+                     .ToPagedList(pageIndex, 5);
         }
     }
 }

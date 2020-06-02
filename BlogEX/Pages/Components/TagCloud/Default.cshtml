@@ -1,0 +1,15 @@
+﻿@model Dictionary<string,int>
+<div class="card my-4">
+    <h5 class="card-header">Tag Cloud</h5>
+    <div class="card-body">
+        <ul class="list-unstyled mb-0">
+            @foreach (var item in Model)
+            {
+                var allData = new Dictionary<string,string>{ {"tag",item.Key },{ "p","1"}};
+                <li class="d-inline">
+                    <a asp-page-handler="tag" asp-route-tag="@item.Key" asp-route-p="1">@item.Key (@item.Value)</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

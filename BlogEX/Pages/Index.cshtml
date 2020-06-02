@@ -1,5 +1,10 @@
 ﻿@page
 @model IndexModel
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using BlogEX.Helper
+@using X.PagedList.Mvc.Core.Common
+
 @{
     ViewData["Title"] = "Home page";
 }
@@ -18,14 +23,18 @@
             <div class="card-body">
                 <h2 class="card-title">@item.Title</h2>
                 <p class="card-text">@Html.Raw(item.Body)</p>
-                <a href="#" class="btn btn-primary">@item.Tags</a>
+                <partial name="_tag" for="@item.Tags" />
 
                 <tags-helper>@item.Tags</tags-helper>
-
             </div>
             <div class="card-footer text-muted">
                 Posted on @item.CreateDate.ToString("yyyy-MM-dd") by me
             </div>
         </div>
     }
+    <!-- Pagination -->
+    @Html.PagedListPager((IPagedList)Model.Article,
+        page => Url.Page("index", new { p = page }),
+        PagingOptionsHelper.FrontEnd)
+    <!-- Pagination -->
 </div>
