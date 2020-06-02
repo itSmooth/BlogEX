@@ -1,0 +1,31 @@
+﻿@page
+@model BlogEX.Pages.Admin.Tag.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>TagCloud</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TagCloud.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TagCloud.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TagCloud.Amount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TagCloud.Amount)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.TagCloud.Id">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
